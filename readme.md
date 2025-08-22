@@ -97,7 +97,42 @@ pedia.page/
 
 ### 🔧 Development Scripts
 - `npm run dev`: Start development server with hot reload
-- `npm run build`: Build optimized production bundle  
+- `npm run build`: Build optimized production bundle
+- `npm run preview`: Preview production build locally
+
+## 🌐 Deployment
+
+### Cloudflare Pages (Recommended)
+
+1. **Push to GitHub**:
+   ```bash
+   git remote add origin https://github.com/yourusername/pedia.page.git
+   git push -u origin main
+   ```
+
+2. **Connect to Cloudflare Pages**:
+   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com) → Pages
+   - Click "Create a project" → "Connect to Git"
+   - Select your GitHub repository
+   - Configure build settings:
+     - Build command: `npm run build`
+     - Build output directory: `dist`
+     - Node.js version: `18`
+
+3. **Set Environment Variables**:
+   - Add `VITE_API_KEY` with your Google Gemini API key
+
+4. **Custom Domain** (Optional):
+   - Go to Pages project → Custom domains
+   - Add your domain and configure DNS
+
+### Features of Cloudflare Pages Deployment
+- ✅ **Unlimited bandwidth** on free tier
+- ✅ **Global CDN** with 275+ data centers
+- ✅ **Automatic HTTPS** with SSL certificates
+- ✅ **Preview deployments** for every commit
+- ✅ **Edge Functions** support
+- ✅ **Built-in DDoS protection**
 - `npm run preview`: Preview production build locally
 
 ## 📖 How to Use
