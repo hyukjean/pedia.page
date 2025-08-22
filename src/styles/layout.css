@@ -1,0 +1,78 @@
+header {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 8px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  z-index: 1001;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  pointer-events: auto;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 320px;
+  max-width: 440px;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 100px auto 0 auto;
+  text-align: center;
+}
+
+#initialViewWrapper {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  z-index: 1000;
+  pointer-events: all;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+body.app-active #initialViewWrapper {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-input-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  padding: 16px 30px;
+  border-top: none;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(100%);
+}
+
+body.app-active .bottom-input-bar {
+  transform: translateY(0);
+  display: flex !important;
+}

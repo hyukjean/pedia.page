@@ -1,0 +1,29 @@
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background for iOS -->
+  <rect width="180" height="180" rx="32" fill="url(#bgGradient)"/>
+  
+  <!-- Book Icon -->
+  <rect x="55" y="55" width="70" height="70" rx="8" fill="url(#bookGradient)"/>
+  <rect x="65" y="70" width="50" height="6" fill="white" opacity="0.9"/>
+  <rect x="65" y="85" width="40" height="5" fill="white" opacity="0.7"/>
+  <rect x="65" y="100" width="30" height="4" fill="white" opacity="0.5"/>
+  
+  <!-- "P" for Pedia -->
+  <text x="90" y="155" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="24" 
+        font-weight="700" 
+        text-anchor="middle" 
+        fill="#4a5568">P</text>
+</svg>

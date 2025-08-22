@@ -1,0 +1,25 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Transparent background for Android -->
+  <rect width="192" height="192" fill="transparent"/>
+  
+  <!-- Book Icon -->
+  <rect x="60" y="60" width="72" height="72" rx="8" fill="url(#bookGradient)"/>
+  <rect x="72" y="78" width="48" height="6" fill="white" opacity="0.9"/>
+  <rect x="72" y="96" width="36" height="5" fill="white" opacity="0.7"/>
+  <rect x="72" y="114" width="28" height="4" fill="white" opacity="0.5"/>
+  
+  <!-- "P" for Pedia -->
+  <text x="96" y="165" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="20" 
+        font-weight="700" 
+        text-anchor="middle" 
+        fill="#4a5568">P</text>
+</svg>

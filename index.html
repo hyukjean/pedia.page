@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedia page</title>
+  
+  <!-- Favicons for all platforms -->
+  <link rel="icon" type="image/svg+xml" href="./src/assets/favicons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="./src/assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./src/assets/favicons/favicon-16x16.png">
+  
+  <!-- Apple Touch Icon (iOS) -->
+  <link rel="apple-touch-icon" href="./src/assets/favicons/apple-touch-icon.png">
+  <link rel="apple-touch-icon-precomposed" href="./src/assets/favicons/apple-touch-icon.png">
+  
+  <!-- Android/PWA -->
+  <link rel="manifest" href="./src/assets/favicons/site.webmanifest">
+  
+  <!-- Windows -->
+  <meta name="msapplication-TileImage" content="./src/assets/favicons/mstile-150x150.png">
+  <meta name="msapplication-TileColor" content="#667eea">
+  
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#667eea">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Pedia page">
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^0.12.0"
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/index.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <a href="#" id="logoLink" aria-label="Go to homepage">
+        <img src="./src/assets/images/pedia-logo.svg" alt="Pedia page" class="logo" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
+      </a>
+    </div>
+    <div class="language-selector">
+      <button id="languageSelectorButton" aria-label="Select language">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      </button>
+      <ul id="languageDropdown" class="language-dropdown hidden">
+        <li data-lang="en">English</li>
+        <li data-lang="ja">日本語</li>
+        <li data-lang="ko">한국어</li>
+        <li data-lang="de">Deutsch</li>
+        <li data-lang="it">Italiano</li>
+        <li data-lang="no">Norsk</li>
+      </ul>
+    </div>
+  </header>
+
+  <div id="initialViewWrapper">
+    <div id="chatbotWindow" class="chatbot-window">
+      <div id="selectedCardsPreview" class="selected-cards-preview"></div>
+      
+      <div class="input-container">
+        <div class="textarea-wrapper">
+          <textarea id="topicInput" rows="1"></textarea>
+        </div>
+      </div>
+
+      <!-- Detail Options -->
+      <div class="detail-selector-container">
+        <div class="detail-selector">
+          <button class="detail-option active" data-detail="basic" data-translate-key="detailBasic">Basic</button>
+          <button class="detail-option" data-detail="detailed" data-translate-key="detailDetailed">Detailed</button>
+        </div>
+      </div>
+      
+      <div id="errorMessage" class="error-message"></div>
+    </div>
+  </div>
+
+
+  <main class="container">
+    <div id="flashcardsContainer" class="flashcards-container">
+      <!-- Flashcards will be generated here -->
+    </div>
+  </main>
+
+  <!-- Bottom input bar for app-active state -->
+  <div id="bottomInputBar" class="bottom-input-bar hidden">
+    <div id="selectedCardsPreviewBottom" class="selected-cards-preview"></div>
+    
+    <div class="input-container">
+      <div class="textarea-wrapper">
+        <textarea id="topicInputBottom" rows="1"></textarea>
+      </div>
+    </div>
+
+    <!-- Detail Options (Now visible on the side) -->
+    <div class="detail-selector-container">
+      <div class="detail-selector-bottom">
+        <button class="detail-option-bottom active" data-detail="basic" data-translate-key="detailBasic">Basic</button>
+        <button class="detail-option-bottom" data-detail="detailed" data-translate-key="detailDetailed">Detailed</button>
+      </div>
+    </div>
+    
+    <div id="errorMessageBottom" class="error-message-bottom"></div>
+  </div>
+  
+  <script type="module" src="./src/index.tsx"></script>
+</body>
+</html>
