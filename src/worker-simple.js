@@ -17,6 +17,61 @@ export default {
     }
 
     try {
+      // Supported languages
+      const supported = ['en','ja','ko','de','it','no'];
+
+      // Extract language preference
+      const paramsLang = url.searchParams.get('lang');
+      const cookieHeader = request.headers.get('Cookie') || '';
+      const cookieLang = (/\blang=([^;]+)/.exec(cookieHeader)?.[1] || '').toLowerCase();
+      const acceptLang = request.headers.get('Accept-Language') || '';
+
+      const normalize = (code) => {
+        if (!code) return '';
+        const lower = code.toLowerCase();
+        const base = lower.split('-')[0];
+        return supported.includes(lower) ? lower : (supported.includes(base) ? base : '');
+      };
+
+      let chosenLang = '';
+      let shouldSetCookie = false;
+
+      // 1) URL param overrides
+      const paramNorm = normalize(paramsLang || '');
+      if (paramNorm) {
+        chosenLang = paramNorm;
+        shouldSetCookie = true;
+      }
+
+      // 2) Existing cookie
+      if (!chosenLang) {
+        const cookieNorm = normalize(cookieLang);
+        if (cookieNorm) {
+          chosenLang = cookieNorm;
+        }
+      }
+
+      // 3) Accept-Language header
+      if (!chosenLang && acceptLang) {
+        const tokens = acceptLang.split(',').map(t => t.trim().split(';')[0]);
+        for (const t of tokens) {
+          const n = normalize(t);
+          if (n) { chosenLang = n; break; }
+        }
+        if (!chosenLang) chosenLang = 'en';
+        shouldSetCookie = true;
+      }
+      if (!chosenLang) {
+        chosenLang = 'en';
+      }
+
+      // Canonical host: redirect apex to www
+      if (url.hostname === 'pedia.page') {
+        const target = new URL(request.url);
+        target.hostname = 'www.pedia.page';
+        return Response.redirect(target.toString(), 301);
+      }
+
       // Handle API routes
       if (path.startsWith('/api/')) {
         if (path === '/api/health') {
@@ -32,71 +87,23 @@ export default {
         );
       }
 
-      // Simple HTML response for now
-      const html = `
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedia.page - AI-powered Flashcard Generator</title>
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            margin: 0; 
-            padding: 40px 20px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        .container { 
-            max-width: 600px; 
-            background: rgba(255,255,255,0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        }
-        h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        p { 
-            font-size: 1.2rem; 
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-        .status {
-            background: rgba(255,255,255,0.2);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🚀 Pedia.page</h1>
-        <p>AI-powered Flashcard Generator</p>
-        <div class="status">
-            <p>✅ Cloudflare Workers 배포 완료!</p>
-            <p>📅 ${new Date().toLocaleString('ko-KR')}</p>
-            <p>🌍 도메인: ${url.hostname}</p>
-        </div>
-        <p>곧 완전한 기능이 제공될 예정입니다.</p>
-    </div>
-</body>
-</html>`;
+      // Try serving static asset from dist using the built-in assets binding
+  let res = await env.ASSETS.fetch(new Request(url, request));
+      
+      // SPA fallback: serve index.html on 404 for client-side routes
+      if (res.status === 404 && request.method === 'GET' && !path.includes('.')) {
+        const indexUrl = new URL('/index.html', url.origin);
+        res = await env.ASSETS.fetch(new Request(indexUrl, request));
+      }
 
-      return new Response(html, {
-        headers: { 'Content-Type': 'text/html; charset=utf-8', ...corsHeaders }
-      });
+      // Add CORS headers and language cookie to static responses
+      res = new Response(res.body, res);
+      Object.entries(corsHeaders).forEach(([k, v]) => res.headers.set(k, v));
+      res.headers.set('Vary', ['Accept-Encoding','Accept-Language'].join(', '));
+      if (shouldSetCookie) {
+        res.headers.append('Set-Cookie', `lang=${chosenLang}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`);
+      }
+      return res;
 
     } catch (error) {
       console.error('Worker error:', error);

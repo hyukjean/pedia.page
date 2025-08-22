@@ -367,14 +367,11 @@ function setupAnimatedPlaceholder(textareaWrapper: HTMLElement, textarea: HTMLTe
   placeholderElement.className = 'animated-placeholder';
   textareaWrapper.appendChild(placeholderElement);
 
-  const prompts = [
-    'What would you like to learn about?',
-    'Add new cards...',
-    'Explain quantum computing...',
-    'How does photosynthesis work?',
-    'Tell me about the Renaissance...',
-    'What is machine learning?'
-  ];
+  // Get localized prompts on demand so it updates when currentLanguage changes
+  const getPrompts = (): string[] => {
+    const list = placeholderExamples[currentLanguage] || placeholderExamples['en'];
+    return Array.isArray(list) && list.length > 0 ? list : placeholderExamples['en'];
+  };
 
   let currentPromptIndex = 0;
   let currentText = '';
@@ -424,11 +421,12 @@ function setupAnimatedPlaceholder(textareaWrapper: HTMLElement, textarea: HTMLTe
 
   function cyclePrompts() {
     if (textarea.value.trim() === '') {
-      const prompt = prompts[currentPromptIndex];
+  const prompts = getPrompts();
+  const prompt = prompts[currentPromptIndex % prompts.length];
       fadeOut(() => {
         typeText(prompt, () => {
           setTimeout(() => {
-            currentPromptIndex = (currentPromptIndex + 1) % prompts.length;
+    currentPromptIndex = (currentPromptIndex + 1) % prompts.length;
             cyclePrompts();
           }, 2000);
         });
@@ -462,7 +460,8 @@ function setupAnimatedPlaceholder(textareaWrapper: HTMLElement, textarea: HTMLTe
   });
 
   // Start the animation cycle
-  typeText(prompts[0], () => {
+  const initialPrompts = getPrompts();
+  typeText(initialPrompts[0] || '', () => {
     setTimeout(() => {
       currentPromptIndex = 1;
       cyclePrompts();
@@ -720,6 +719,43 @@ detailOptionsBottom.forEach(option => {
 });
 
 // --- INITIALIZATION ---
-setLanguage('en');
+function getCookie(name: string): string | null {
+  const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return m ? decodeURIComponent(m[2]) : null;
+}
+
+function inferInitialLanguage(): Language {
+  const supported: Language[] = ['en','ja','ko','de','it','no'];
+  // 1) URL param
+  const url = new URL(window.location.href);
+  const p = url.searchParams.get('lang');
+  const norm = (c?: string | null): Language | '' => {
+    if (!c) return '' as any;
+    const lower = c.toLowerCase();
+    const base = lower.split('-')[0];
+    return (supported as string[]).includes(lower) ? (lower as Language) : ((supported as string[]).includes(base) ? (base as Language) : '' as any);
+  };
+  const fromParam = norm(p);
+  if (fromParam) return fromParam as Language;
+
+  // 2) Cookie
+  const fromCookie = norm(getCookie('lang'));
+  if (fromCookie) return fromCookie as Language;
+
+  // 3) Navigator language(s)
+  const langs: string[] = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]).filter(Boolean) as string[];
+  for (const l of langs) {
+    const n = norm(l);
+    if (n) return n as Language;
+  }
+  return 'en';
+}
+
+const initialLang = inferInitialLanguage();
+setLanguage(initialLang);
+
+// Persist cookie client-side too, so future visits keep the preference.
+document.cookie = `lang=${initialLang}; Path=/; Max-Age=31536000; SameSite=Lax`;
+
 topicInput.focus();
 startPlaceholderAnimation();
