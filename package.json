@@ -8,14 +8,15 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy:cloudflare": "npm run build && wrangler pages publish dist",
-    "cf:dev": "wrangler pages dev dist"
+    "deploy:worker": "npm run build && wrangler publish",
+    "worker:dev": "wrangler dev src/worker.js"
   },
   "keywords": ["ai", "flashcards", "education", "learning", "gemini", "typescript"],
   "author": "hyukjean",
   "license": "Apache-2.0",
   "dependencies": {
-    "@google/genai": "^0.12.0"
+    "@google/genai": "^0.12.0",
+    "@cloudflare/kv-asset-handler": "^0.3.4"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

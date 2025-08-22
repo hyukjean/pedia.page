@@ -1,0 +1,13 @@
+name = "pedia-page"
+main = "src/worker-simple.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom domain routes
+[[routes]]
+pattern = "pedia.page/*"
+zone_name = "pedia.page"
+
+[[routes]]
+pattern = "www.pedia.page/*"
+zone_name = "pedia.page"
